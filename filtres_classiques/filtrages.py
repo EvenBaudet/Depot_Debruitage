@@ -37,7 +37,7 @@ def voisinage_gaussien(rayon, sigma, Y_pad, n, p):
     return wp/normalisation
 
 
-## Filtre médian
+## Filtre médian (on ne l'étudie pas mais ce serait bien de mentionner qu'il est top pour sel et poivre)
 def voisinage_median(i, j, n, p, fenetre, Y):
     k = fenetre[-1]
     region = Y[i - k: i + k + 1, j - k: j + k +1]
