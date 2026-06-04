@@ -5,7 +5,6 @@ import numpy as np
 def gaussien(x, sigma):
     return np.e**(-x / (2 * sigma**2))
 
-# --- FILTRE GAUSSIEN ---
 def debruitage_gaussien(i, j, n, p, fenetre, sigma, Y):
     normalisation, wp = 0, 0
     for k in fenetre:
@@ -17,13 +16,11 @@ def debruitage_gaussien(i, j, n, p, fenetre, sigma, Y):
     return wp / normalisation if normalisation != 0 else Y[i, j]
 
 def filtre_gaussien(image_bruite, sigma=1.5):
-    # 1. Calcul dynamique de la taille de fenêtre impaire (nxn)
     taille_fenetre = int(2 * np.ceil(3 * sigma) + 1)
     
     n, p = image_bruite.shape
     Y_debruite = np.zeros((n, p))
     
-    # 2. Génération des indices de la fenêtre autour de (0,0)
     r = taille_fenetre // 2
     fenetre = list(range(-r, r + 1))
 
@@ -33,7 +30,6 @@ def filtre_gaussien(image_bruite, sigma=1.5):
     
     return np.clip(Y_debruite, 0, 255)
 
-# --- FILTRE BILATÉRAL ---
 def debruitage_bilateral(i, j, n, p, fenetre, sigma_d, sigma_r, Y):
     normalisation, wp = 0, 0
     for k in fenetre:
@@ -57,7 +53,6 @@ def filtre_bilateral(image_bruite, sigma_d=63.6, sigma_r=1.4, taille_fenetre=5):
     
     return np.clip(Y_debruite, 0, 255)
 
-# --- FILTRE MOYENNEUR ---
 def debruitage_moyenneur(i, j, n, p, fenetre, Y):
     moy, ct = 0, 0
     for k in fenetre:
@@ -80,7 +75,7 @@ def filtre_moyenneur(image_bruite, taille_noyau=5):
         
     return np.clip(Y_debruite, 0, 255)
 
-# --- MÉTRIQUES DE PERFORMANCE ---
+# les metriques servaient pour l'ancienne étude des hyperparametres mais je les laisse au cas ou
 def SSIM(img1, img2, window_size=11):
     img1 = img1.astype(np.float64)
     img2 = img2.astype(np.float64)
