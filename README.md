@@ -15,5 +15,7 @@ python main.py
 ```
 
 graphiques_gaussien_0.1/ : Contient tous les résultats et courbes de performance face au bruit Gaussien classique ($\sigma = 0.1$).
+
 graphiques_poissonien_100/ : Contient tous les résultats et courbes de performance face au bruit de Poisson (Flux à peak = 100).
+
 graphiques_sel_et_poivre_0.05/ : Contient tous les résultats et courbes de performance face au bruit impulsionnel (5% de pixels détruits).
