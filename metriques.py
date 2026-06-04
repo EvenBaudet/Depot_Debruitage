@@ -5,7 +5,6 @@ def SSIM(img1, img2, window_size=11):
     img1 = img1.astype(np.float64)
     img2 = img2.astype(np.float64)
     
-    # Constantes standards adaptées à la dynamique [0, 1]
     c1 = (0.01 * 1.0)**2
     c2 = (0.03 * 1.0)**2
     
@@ -35,7 +34,6 @@ def PSNR(Y, Y_filtre):
     if mse == 0:
         return 100.0
 
-    # L vaut maintenant 1.0 pour la dynamique [0, 1]
     L = 1.0
     psnr = 10 * np.log10((L**2) / mse)
     return psnr
