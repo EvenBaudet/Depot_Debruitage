@@ -1,0 +1,36 @@
+Début de l'optimisation des filtres :
+
+Évaluation du [filtre de wiener]...
+  [RESULTATS FILTRE DE WIENER] :
+    -> SSIM Max : 0.7511 pour (k=1.0, taille_patch=2)
+    -> PSNR Max : 24.79 dB pour (k=3.0, taille_patch=4)
+
+Évaluation du [filtre gaussien]...
+  [RESULTATS FILTRE GAUSSIEN] :
+    -> SSIM Max : 0.7412 pour sigma = 0.5857142857142857
+    -> PSNR Max : 24.50 dB pour sigma = 0.5857142857142857
+
+Évaluation du [filtre moyenneur]...
+  [RESULTATS FILTRE MOYENNEUR] :
+    -> SSIM Max : 0.6729 pour taille_noyau = 1
+    -> PSNR Max : 22.29 dB pour taille_noyau = 2
+
+Évaluation du [filtre passe-bas]...
+  [RESULTATS FILTRE PASSE-BAS] :
+    -> SSIM Max : 0.6666 pour fc = 100.0
+    -> PSNR Max : 22.57 dB pour fc = 89.57894736842105
+
+Évaluation du [filtre bilatéral]...
+  [RESULTATS FILTRE BILATÉRAL] :
+    -> SSIM Max : 0.7498 pour (sigma_d=0.1, sigma_r=2.3666666666666667)
+    -> PSNR Max : 24.41 dB pour (sigma_d=0.1, sigma_r=3.5)
+
+Évaluation du [filtre de Perona-Malik]...
+  [RESULTATS FILTRE DE PERONA-MALIK] :
+    -> SSIM Max : 0.7574 pour (g_func=g_1, n_iter=6)
+    -> PSNR Max : 24.81 dB pour (g_func=g_1, n_iter=8)
+
+Évaluation du [filtre de Butterworth]...
+  [RESULTATS FILTRE DE BUTTERWORTH] :
+    -> SSIM Max : 0.7470 pour (fc=105.73684210526315, n_ordre=1)
+    -> PSNR Max : 24.52 dB pour (fc=95.26315789473684, n_ordre=1)
