@@ -7,7 +7,6 @@ def filtre_passe_bas(Y, fc=30):
     n, p = L_img.shape
     spectre_Y = np.fft.fftshift(np.fft.fft2(L_img))
     
-    # Création du masque idéal passe-bas (fréquence de coupure)
     u = np.arange(n) - n // 2
     v = np.arange(p) - p // 2
     U, V = np.meshgrid(v, u)
