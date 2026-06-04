@@ -15,14 +15,13 @@ from metriques import SSIM, PSNR
 
 os.makedirs("graphiques", exist_ok=True)
 
-# CONFIGURATION DES HYPERPARAMÈTRES
-# On définit ici 1 ou 2 paramètres max à optimiser par filtre
+# parametres que l'on va étudier
 configuration_filtres = {
     'filtre de wiener': {
         'fonction': filtre_wiener,
         'params': {
-            'k': np.linspace(1,27,14),                  # Fenêtre de lissage (minuscule)
-            'taille_patch': np.array([2,4,6,8,10,12,14,16,18,20])       # Taille des blocs locaux
+            'k': np.linspace(1,27,14),                  
+            'taille_patch': np.array([2,4,6,8,10,12,14,16,18,20])      
         }
     },
     'filtre gaussien': {
@@ -46,14 +45,14 @@ configuration_filtres = {
     'filtre bilatéral': {
         'fonction': filtre_bilateral,
         'params': {
-            'sigma_d': np.linspace(0.1, 3, 10),   # Adapté à tes variables réelles
+            'sigma_d': np.linspace(0.1, 3, 10),   
             'sigma_r': np.linspace(0.1, 3.5,10)
         }
     },
     'filtre de Perona-Malik': {
         'fonction': filtre_perona_malik,
         'params': {
-            'g_func': np.array([g_1, g_2]),      # Passe directement les fonctions g_1 et g_2
+            'g_func': np.array([g_1, g_2]),     
             'n_iter': np.array([1,3,5,6,7,8,9,10,12,14,16])
         }
     },
@@ -61,12 +60,11 @@ configuration_filtres = {
         'fonction': filtre_butterworth,
         'params': {
             'fc': np.linspace(1, 200, 20),   
-            'n_ordre': np.array([1, 2, 3, 4,5,6,7,8])    # Corrigé en n_ordre
+            'n_ordre': np.array([1, 2, 3, 4,5,6,7,8])  
         }
     }
 }
 
-# --- CHARGEMENT DES IMAGES ---
 N = int(input('Nombre d\'images à traiter (1-100) : '))
 images_dispo = [f for f in os.listdir("base_image") if f.endswith(('.png', '.jpg', '.jpeg', '.tif'))]
 images_a_traiter = images_dispo[:N]
@@ -79,21 +77,18 @@ for nom_f in images_a_traiter:
     chemin = os.path.join("base_image", nom_f)
     img = mpimg.imread(chemin).astype(np.float64)
 
-    # Si l'image lue est en mode 0-255 (comme les JPEG parfois), on force le passage entre 0 et 1
-    if img.max() > 1.0:
+    if img.max() > 1.0: # juste au cas ou
         img = img / 255.0
 
-    # Redimensionnement spatial en 128x128
+    # Redimensionnement en 256x256 pour que le temps de calcul soit plus court
     h, w = img.shape[:2]
     indices_y = np.linspace(0, h - 1, 256).astype(int)
     indices_x = np.linspace(0, w - 1, 256).astype(int)
     img_final = img[np.ix_(indices_y, indices_x)]
         
-    # Stockage propre des versions [0, 1] en float
     img_originales.append(img_final)
     img_bruites.append(ajouter_bruit_gaussien(img_final, 0.1))
 
-# --- BOUCLE PRINCIPALE D'OPTIMISATION ---
 print('\nDébut de l\'optimisation des filtres :')
 
 for nom_filtre, config in configuration_filtres.items():
@@ -101,7 +96,6 @@ for nom_filtre, config in configuration_filtres.items():
     func = config['fonction']
     param_names = list(config['params'].keys())
     
-    # Cas 1 : 1 seul paramètre à optimiser (Graphique 2D)
     if len(param_names) == 1:
         p1_vals = config['params'][param_names[0]]
         
@@ -111,7 +105,6 @@ for nom_filtre, config in configuration_filtres.items():
         for v1 in p1_vals:
             ssim_run, psnr_run = [], []
             for idx in range(N):
-                # On passe le paramètre de manière dynamique via **kwargs
                 kwargs = {param_names[0]: v1}
                 img_f = func(img_bruites[idx], **kwargs)
                 
@@ -121,7 +114,6 @@ for nom_filtre, config in configuration_filtres.items():
             ssim_moyens.append(np.mean(ssim_run))
             psnr_moyens.append(np.mean(psnr_run))
             
-        # --- Affichage Graphique 2D ---
         fig, ax1 = plt.subplots(figsize=(8, 4))
         ax2 = ax1.twinx()
         
@@ -145,12 +137,10 @@ for nom_filtre, config in configuration_filtres.items():
         plt.title(f'Optimisation 2D - {nom_filtre}')
         plt.show()
 
-    # Cas 2 : 2 paramètres à optimiser (Remplacé : Lignes de niveau au lieu de la 3D)
     elif len(param_names) == 2:
         p1_vals = config['params'][param_names[0]]
         p2_vals = config['params'][param_names[1]]
         
-        # Grilles pour stocker les résultats moyens
         ssim_grille = np.zeros((len(p1_vals), len(p2_vals)))
         psnr_grille = np.zeros((len(p1_vals), len(p2_vals)))
         
@@ -167,9 +157,6 @@ for nom_filtre, config in configuration_filtres.items():
                 ssim_grille[i, j] = np.mean(ssim_run)
                 psnr_grille[i, j] = np.mean(psnr_run)
         
-        # --- NOUVEL AFFICHAGE : CARTES DE CONTOURS (LIGNES DE NIVEAU) ---
-        
-        # Sécurité pour Perona-Malik ou les listes contenant des fonctions
         p1_plot_vals = range(len(p1_vals)) if callable(p1_vals[0]) else p1_vals
         p2_plot_vals = range(len(p2_vals)) if callable(p2_vals[0]) else p2_vals
         
@@ -177,17 +164,15 @@ for nom_filtre, config in configuration_filtres.items():
         
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
         
-        # 1. Lignes de niveau pour le SSIM
         cp1 = ax1.contourf(P1, P2, ssim_grille, levels=15, cmap='viridis')
         lignes1 = ax1.contour(P1, P2, ssim_grille, levels=7, colors='black', alpha=0.4, linewidths=0.8)
         ax1.clabel(lignes1, inline=True, fontsize=8, fmt='%.2f') 
         
-        ax1.set_xlabel(param_names[1]) # Deuxième paramètre en X (ex: sigma_r)
-        ax1.set_ylabel(param_names[0]) # Premier paramètre en Y (ex: sigma_d)
+        ax1.set_xlabel(param_names[1]) 
+        ax1.set_ylabel(param_names[0]) 
         ax1.set_title(f'Optimisation SSIM - {nom_filtre}')
         fig.colorbar(cp1, ax=ax1, label='Score SSIM')
         
-        # 2. Lignes de niveau pour le PSNR
         cp2 = ax2.contourf(P1, P2, psnr_grille, levels=15, cmap='plasma')
         lignes2 = ax2.contour(P1, P2, psnr_grille, levels=7, colors='black', alpha=0.4, linewidths=0.8)
         ax2.clabel(lignes2, inline=True, fontsize=8, fmt='%.1f') 
@@ -197,7 +182,6 @@ for nom_filtre, config in configuration_filtres.items():
         ax2.set_title(f'Optimisation PSNR (dB) - {nom_filtre}')
         fig.colorbar(cp2, ax=ax2, label='PSNR (dB)')
         
-        # Remise en forme des étiquettes d'axes si ce sont des fonctions
         if callable(p1_vals[0]):
             ax1.set_yticks(range(len(p1_vals)))
             ax1.set_yticklabels([f.__name__ for f in p1_vals])
@@ -213,11 +197,9 @@ for nom_filtre, config in configuration_filtres.items():
         i_ssim, j_ssim = np.unravel_index(np.argmax(ssim_grille), ssim_grille.shape)
         i_psnr, j_psnr = np.unravel_index(np.argmax(psnr_grille), psnr_grille.shape)
         
-        # Récupération des vraies valeurs des paramètres
         best_p1_ssim, best_p2_ssim = p1_vals[i_ssim], p2_vals[j_ssim]
         best_p1_psnr, best_p2_psnr = p1_vals[i_psnr], p2_vals[j_psnr]
         
-        # Gestion de l'affichage si ce sont des fonctions (ex: g_1, g_2)
         name_p1_ssim = best_p1_ssim.__name__ if callable(best_p1_ssim) else best_p1_ssim
         name_p2_ssim = best_p2_ssim.__name__ if callable(best_p2_ssim) else best_p2_ssim
         name_p1_psnr = best_p1_psnr.__name__ if callable(best_p1_psnr) else best_p1_psnr
