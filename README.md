@@ -42,5 +42,3 @@ poisson_graphs_100/: Contains all results and performance curves for Poisson noi
 
 salt_and_pepper_graphs_0.05/: Contains all results and performance curves for impulse noise (5% of pixels destroyed).
 
-
-Translated with DeepL.com (free version)
