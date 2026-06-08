@@ -19,3 +19,28 @@ graphiques_gaussien_0.1/ : Contient tous les résultats et courbes de performanc
 graphiques_poissonien_100/ : Contient tous les résultats et courbes de performance face au bruit de Poisson (Flux à peak = 100).
 
 graphiques_sel_et_poivre_0.05/ : Contient tous les résultats et courbes de performance face au bruit impulsionnel (5% de pixels détruits).
+
+# Noise Reduction Filter Optimization - Hyperparameter Tuning
+
+This script tests and optimizes several filters (spatial and frequency-domain) against three distinct types of noise, which can be modified by selecting the desired noise addition function on line 94 of main.py (these are defined in fonctions_annexe.py). Performance is measured using PSNR and SSIM.
+
+## Installation & Execution
+
+1. Download and extract the project folder.
+
+```bash
+# 2. Install dependencies
+python -m pip install -r requirements.txt
+
+# 3. Run the tests and generate the graphs
+python main.py
+```
+
+graphiques_gaussien_0.1/: Contains all results and performance curves for classical Gaussian noise ($\sigma = 0.1$).
+
+poisson_graphs_100/: Contains all results and performance curves for Poisson noise (peak flux = 100).
+
+salt_and_pepper_graphs_0.05/: Contains all results and performance curves for impulse noise (5% of pixels destroyed).
+
+
+Translated with DeepL.com (free version)
